@@ -1,36 +1,7 @@
 import { Box, Button, Text, TextField, Image } from "@skynexui/components";
+import React, { useEffect } from "react";
 import appConfig from "../config.json";
-
-function GlobalStyle() {
-  return (
-    <style global jsx>{`
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        list-style: none;
-      }
-      body {
-        font-family: "Open Sans", sans-serif;
-      }
-      /* App fit Height */
-      html,
-      body,
-      #__next {
-        min-height: 100vh;
-        display: flex;
-        flex: 1;
-      }
-      #__next {
-        flex: 1;
-      }
-      #__next > * {
-        flex: 1;
-      }
-      /* ./App fit Height */
-    `}</style>
-  );
-}
+import { useRouter } from "next/router";
 
 function Titulo(props) {
   const Tag = props.tag || "h1";
@@ -62,11 +33,12 @@ function Titulo(props) {
 // export default HomePage
 
 export default function PaginaInicial() {
-  const username = "mau-me";
+  // const username = "mau-me";
+  const [username, setUsername] = React.useState("");
+  const roteamento = useRouter();
 
   return (
     <>
-      <GlobalStyle />
       <Box
         styleSheet={{
           display: "flex",
@@ -101,6 +73,11 @@ export default function PaginaInicial() {
           {/* Formulário */}
           <Box
             as="form"
+            onSubmit={function (infoDoEvento) {
+              infoDoEvento.preventDefault();
+              console.log("Submit Ok!");
+              roteamento.push("/chat");
+            }}
             styleSheet={{
               display: "flex",
               flexDirection: "column",
@@ -122,7 +99,25 @@ export default function PaginaInicial() {
               {appConfig.name}
             </Text>
 
+            {/* <input
+              type="text"
+              value={username}
+              onChange={function (event) {
+                console.log(event.target.value);
+                // Valor sendo alterado
+                const newValue = event.target.value;
+                setUsername(newValue);
+              }}
+            /> */}
             <TextField
+              value={username}
+              onChange={function (event) {
+                // Valor sendo alterado
+                const newValue = event.target.value;
+                console.log(newValue);
+                // Mudando o estado
+                setUsername(newValue);
+              }}
               fullWidth
               textFieldColors={{
                 neutral: {
@@ -134,6 +129,7 @@ export default function PaginaInicial() {
               }}
             />
             <Button
+              disabled={username.length < 3}
               type="submit"
               label="Entrar"
               fullWidth
@@ -165,7 +161,6 @@ export default function PaginaInicial() {
           >
             <Image
               styleSheet={{
-                borderRadius: "50%",
                 marginBottom: "16px",
               }}
               src={`https://github.com/${username}.png`}
